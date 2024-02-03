@@ -15,6 +15,8 @@ router.register("followers", FollowersView)
 router.register("following", FollowingView)
 router.register("user", UserView)
 router.register("friendRequest", FriendRequestView)
+
+
 urlpatterns = [
     path("", include(router.urls)),
 ]

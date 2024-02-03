@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework import viewsets, status
+from rest_framework_simplejwt.tokens import Token
 from .models import Profile, Following, Followers, User, Social, FriendRequest
 from .serializers import (
     ProfileSerializers,
@@ -10,21 +11,32 @@ from .serializers import (
     UserSerializers,
     SocialSerializers,
     FriendRequestSerializers,
+    # UserLoginSerializer,
+    # TokenSerializers,
 )
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from main.models import Post, Likes
 from main.serializers import PostSerializers, LikeSerializers
+from django.contrib.auth.backends import ModelBackend
+from rest_framework.views import APIView
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import login, logout
+from rest_framework.views import APIView
+from rest_framework import permissions, status
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 # Create your views here.
+@permission_classes([IsAuthenticated])
 class ProfileView(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializers
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
 
     @action(detail=True, methods=["GET"])
     def get_post(self, request, pk):
@@ -72,14 +84,17 @@ class ProfileView(viewsets.ModelViewSet):
         accept = request.data["status"]
         user = request.user
         friend_request = FriendRequest.objects.get(id=request_id)
-        # print(" user id", user.id)
-        # print("reciver : ", friend_request.reciver.id)
         if friend_request.reciver.id == user.id:
             try:
                 friend_request.status = accept
                 sender = friend_request.sender
                 friend_request.save()
-                response = {f"message:" "you accept {sender} request "}
+                response = {
+                    f"message:" "you accept {sender} request ",
+                }
+                followers_obj = Followers.objects.create(user=user, followers=sender)
+                following_obj = Following.objects.create(user=sender, following=user)
+
                 return Response(response, status=status.HTTP_202_ACCEPTED)
             except:
                 response = {"message": "something went wrong"}
@@ -91,7 +106,8 @@ class ProfileView(viewsets.ModelViewSet):
             return Response(response, status=status.HTTP_404_NOT_FOUND)
 
     @action(detail=False, methods=["GET"])
-    def get_friends_request(self, request):  # detail=False is for a set of objects
+    def get_friends_request(self, request, detail=False):
+        # detail=False is for a set of objects
         print("user  : ", request.user)
         print("self ", self)
         try:
@@ -107,10 +123,17 @@ class ProfileView(viewsets.ModelViewSet):
 class UserView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializers
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        clear_data = request.data
+        serializer = UserSerializers(data=clear_data)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.create(validated_data=clear_data)
+            return Response(user, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@permission_classes([IsAuthenticated])
 class FollowersView(viewsets.ModelViewSet):
     queryset = Followers.objects.all()
     serializer_class = FollowersSerializers
@@ -118,6 +141,7 @@ class FollowersView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
 
+@permission_classes([IsAuthenticated])
 class FollowingView(viewsets.ModelViewSet):
     queryset = Following.objects.all()
     serializer_class = FollowingSerializers
@@ -125,6 +149,7 @@ class FollowingView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
 
+@permission_classes([IsAuthenticated])
 class SocialView(viewsets.ModelViewSet):
     queryset = Social.objects.all()
     serializer_class = SocialSerializers
@@ -132,6 +157,7 @@ class SocialView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
 
+@permission_classes([IsAuthenticated])
 class FriendRequestView(viewsets.ModelViewSet):
     queryset = FriendRequest.objects.all()
     serializer_class = FriendRequestSerializers
@@ -168,3 +194,36 @@ class FriendRequestView(viewsets.ModelViewSet):
                 "The data provided in your request is invalid. Please review and correct the input data."
             }
             return Response(Response, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        # Add custom claims
+        token["username"] = user.username
+        return token
+
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+
+##make an account post protected to other accounts if they are not following the account
+
+# make sure that the send token is the token for the spesific user
+
+
+# @api_view(["POST"])
+# def register(self, request):
+#     serializer = UserSerializers(data=request.data)
+#     if serializer.is_valid():
+#         serializer.save()
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+#     return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+
+# @action(detail=True, methods=["GET"])
+# def Login(self, request, pk=None):
+#     user = User.objects.get(id=pk)
+#     token = Token.objects.get(user=user)
+#     print(token)

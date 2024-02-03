@@ -39,14 +39,16 @@ class User(AbstractUser, PermissionsMixin):
     """Customize built-in User model, so it will require an email"""
 
     email = models.EmailField(null=False, blank=False, unique=True)
-    name = models.CharField(null=False, blank=False, max_length=200)
+    first_name = models.CharField(null=False, blank=False, max_length=200)
+    last_name = models.CharField(null=False, blank=False, max_length=200)
+    username = models.CharField(null=False, blank=False, max_length=200)
     objects = UserManager()
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
 
 class Profile(models.Model):
-    """a model which contain all the fields that is needed for user's profile or account, and it's not needed for authentication"""
+    """a model which contain all the fields that are needed for user's profile or account, and aren't  needed for authentication"""
 
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
@@ -123,7 +125,7 @@ class Followers(models.Model):
     )
 
     def __str__(self):
-        return f"{self.followers.name} followes {self.user.name} "
+        return f"{self.followers.id} followes {self.user.id} "
 
     class Meta:
         unique_together = ["user", "followers"]
@@ -167,7 +169,7 @@ class FriendRequest(models.Model):
     created_at = models.DateField(null=False, blank=False, default=date.today)
 
     def __str__(self):
-        return f"{self.sender.name} send request to {self.reciver.name}"
+        return f"{self.sender.id} send request to {self.reciver.id}"
 
     class Meta:
         unique_together = ["reciver", "sender"]
