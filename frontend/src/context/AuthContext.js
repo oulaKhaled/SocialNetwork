@@ -24,10 +24,11 @@ export const AuthProvider=({ children })=>{
     
 const login= async (e)=>{
 e.preventDefault();
-    let response= await fetch(`${BASE_URL}token/`,{
-        method:"POST",
+let response=  await fetch(`${BASE_URL}token/`,{
+    method:"POST", 
         headers:{
             "Content-Type":"application/json"
+
         },
         body:JSON.stringify({"email":e.target.email.value,"password":e.target.password.value})
     })

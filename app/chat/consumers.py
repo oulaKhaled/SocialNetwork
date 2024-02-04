@@ -1,21 +1,36 @@
 from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
 import json
-from asgiref.sync import async_to_sync
+from asgiref.sync import async_to_sync, sync_to_async
+from .models import Group, Message
+from Profile.models import User
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
     # This method is called when a client connects to the WebSocket server.
     async def connect(self):
-        self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
+        user1 = self.scope["url_route"]["kwargs"]["user1"]
+        user2 = self.scope["url_route"]["kwargs"]["user2"]
+        # def new():
+        #     get_user1 = User.objects.get(id=user1)
+        #     get_user2 = User.objects.get(id=user2)
+        #     new_group = Group.objects.create(user1=user1, user2=user2)
+        #     print(" Group Successfully created : ", new_group)
+
+        # sync_to_async(new)
+
+        self.room_name = f"{user1}_{user2}"
         self.room_group_name = "chat_%s" % self.room_name
-        self.user = self.scope["user"].username
+        # self.user = self.scope["user"]
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
+        print(" group name :", self.room_group_name)
+        # print(" user:", self.user)
+        print("channel name", self.channel_name)
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
-        user = text_data_json["user"]
+        # user = text_data_json["user"]
         print(" Recive  Message : ", message)
 
         await self.channel_layer.group_send(

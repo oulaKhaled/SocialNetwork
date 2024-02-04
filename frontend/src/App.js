@@ -7,7 +7,7 @@ import Home from "./components/HomePage";
 import { AuthProvider } from "./context/AuthContext";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./App.css"
-
+import Rooms from "./components/Rooms";
 import ChatRoom from "./components/ChatRoom";
 
 function App(){
@@ -18,6 +18,9 @@ function App(){
           <Route path="/login" element={<Login/>}   />
           <Route  path="/register" element={<Register/>}   />
           <Route path="/chat" element={<ChatRoom/>}/>
+          <Route path="/rooms" element={<Rooms/>}/>
+
+
 </Routes>
 
 </>
