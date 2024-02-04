@@ -10,13 +10,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         user1 = self.scope["url_route"]["kwargs"]["user1"]
         user2 = self.scope["url_route"]["kwargs"]["user2"]
-        # def new():
-        #     get_user1 = User.objects.get(id=user1)
-        #     get_user2 = User.objects.get(id=user2)
-        #     new_group = Group.objects.create(user1=user1, user2=user2)
-        #     print(" Group Successfully created : ", new_group)
-
-        # sync_to_async(new)
 
         self.room_name = f"{user1}_{user2}"
         self.room_group_name = "chat_%s" % self.room_name
