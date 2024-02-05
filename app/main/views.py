@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from .models import Post, Likes, Comment
 from .serializers import (
     PostSerializers,
@@ -19,11 +19,12 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
+@permission_classes([IsAuthenticated])
 class CommentView(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializers
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
 
     @action(detail=True, methods=["POST"])
     def add_like(self, request, pk=None):
@@ -45,11 +46,23 @@ class CommentView(viewsets.ModelViewSet):
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
 
+@permission_classes([IsAuthenticated])
 class PostView(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializers
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
+
+    def list(self, request, pk):
+        post = Post.objects.filter(author=pk)
+        if post:
+            serializer = PostSerializers(post, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            response = {"message": "the suthor has no posts"}
+            return Response(response, status=status.HTTP_404_NOT_FOUND)
+
+        return super().list(request, *args, **kwargs)
 
     @action(detail=True, methods=["GET"])
     def get_related_comments(self, request, pk):
@@ -69,6 +82,7 @@ class PostView(viewsets.ModelViewSet):
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
 
+@permission_classes([IsAuthenticated])
 class LikeView(viewsets.ModelViewSet):
     queryset = Likes.objects.all()
     serializer_class = LikeSerializers

@@ -8,14 +8,15 @@ import AuthContext from "../context/AuthContext";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-
+import { useLocation } from "react-router-dom";
 const ChatRoom=()=>{
-
+const location=useLocation();
     const [message, setmessage]=useState("");
 const [newmessage,setnewMessages]=useState([])
-// const [url,setUrl]=useState("")
-let newdata=[];
 
+let newdata=[];
+const user2=location.state.username;
+console.log();
 
 const {user}=useContext(AuthContext);
 const navigate=useNavigate(); 
@@ -26,20 +27,17 @@ const handelForm=(e)=>{
 
 useEffect(()=>{
          if(user) {
-            let url=`ws://127.0.0.1:8000/ws/chat/${user.user_id}/2/`
+            let url=`ws://127.0.0.1:8000/ws/chat/${user.user_id}/${user2}/`
             const chatsocket=new WebSocket(url);
-            
+            console.log(" Chat Socket connection : ",chatsocket);
         chatsocket.onmessage=function(e){
                 const data=JSON.parse(e.data)
-                console.log("Data :" ,data);
+                console.log("Data :",data);
                 if(data.type==="chat"){
-                    // setnewMessages(prev=>[...prev,data.message])
-                    newmessage.push(data.message)
+                newmessage.push(data.message)
                 setnewMessages([...newmessage])
-                console.log(" new data :",newmessage);
-                    
                     }
-                    console.log(" User id ",user.user_id);
+                 
                 };
           
                 chatsocket.onopen=()=> chatsocket.send(JSON.stringify({

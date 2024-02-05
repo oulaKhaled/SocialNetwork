@@ -98,7 +98,8 @@ let updateToken= async ()=>{
 const context={
     user:user,
     login:login,
-    logout:logout
+    logout:logout,
+    authToken:authToken,
 };
 return(
         <AuthContext.Provider value={context}>{children}</AuthContext.Provider>

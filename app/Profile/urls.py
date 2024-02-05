@@ -7,6 +7,7 @@ from .views import (
     FollowingView,
     UserView,
     FriendRequestView,
+    UserRegister,
 )
 
 router = routers.DefaultRouter()
@@ -14,6 +15,7 @@ router.register("profile", ProfileView)
 router.register("followers", FollowersView)
 router.register("following", FollowingView)
 router.register("user", UserView)
+router.register("register", UserRegister)
 router.register("friendRequest", FriendRequestView)
 
 

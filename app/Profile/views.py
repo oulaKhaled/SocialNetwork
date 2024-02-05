@@ -119,8 +119,20 @@ class ProfileView(viewsets.ModelViewSet):
             response = {"message": "something went wrong"}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=False, methods=["GET"])
+    def get_home_page_posts(request, user):
+        user = request.uer
+        following_list = Following.objects.filter(user=user)
+        post_list = Post.objects.filter(id=following_list.id)
 
+
+@permission_classes([IsAuthenticated])
 class UserView(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializers
+
+
+class UserRegister(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializers
 
@@ -135,34 +147,42 @@ class UserView(viewsets.ModelViewSet):
 
 @permission_classes([IsAuthenticated])
 class FollowersView(viewsets.ModelViewSet):
+
     queryset = Followers.objects.all()
     serializer_class = FollowersSerializers
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
 
 
 @permission_classes([IsAuthenticated])
 class FollowingView(viewsets.ModelViewSet):
     queryset = Following.objects.all()
     serializer_class = FollowingSerializers
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+
+    def list(self, request):
+        user = request.user
+        following = Following.objects.filter(user=user)
+        print(following.values())
+        print("user :", user)
+        print("user_id :", user.id)
+        serializer = FollowingSerializers(following, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @permission_classes([IsAuthenticated])
 class SocialView(viewsets.ModelViewSet):
     queryset = Social.objects.all()
     serializer_class = SocialSerializers
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
 
 
 @permission_classes([IsAuthenticated])
 class FriendRequestView(viewsets.ModelViewSet):
     queryset = FriendRequest.objects.all()
     serializer_class = FriendRequestSerializers
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
 
     @action(detail=True, methods=["POST"])  # make sure of having pk
     def send_friend_request(self, request, pk=None):

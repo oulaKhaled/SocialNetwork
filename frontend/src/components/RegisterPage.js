@@ -25,7 +25,7 @@ const handelInputChange=(evt)=>{
 
 const handelClick=(e)=>{
   e.preventDefault();
-    fetch(`${BASE_URL}profile/user/`,{
+    fetch(`${BASE_URL}profile/register/`,{
         method:"POST",
         headers:{
             'Content-Type':'application/json'
@@ -35,7 +35,7 @@ const handelClick=(e)=>{
       if(response.statusText==="Created")
     {
       console.log("New user Created");
-     navigate("/");
+     navigate("/login");
 
     }
   else{
