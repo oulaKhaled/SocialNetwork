@@ -18,9 +18,11 @@ try{
         "Authorization":`Bearer ${authToken.access}`,
         "Content-Type":"application/json"}
     })
-    const data= await response2.json();
+    console.log("rsponse2 : ",response2.status);
+  
+      const data= await response2.json();
+      setUser(data)
 
-    setUser(data);
   }
   catch(error){
     console.log(error);
@@ -31,9 +33,11 @@ try{
 
 useEffect(()=>{
      getUsers()
+ 
 },[])
 useEffect(()=>{
     console.log("user",users);
+   
 },[users])
       
 
@@ -46,8 +50,8 @@ return (
         <header className="App-header">
         <h1>Welcome to Rooms Page</h1>
         <ul>
-          { value.map(user=>(
-          <li >{user[Object.keys(user)[9]]}</li>))}
+          { users && users.map(user=>(
+          <li >{user.username}</li>))}
         </ul>
 
         </header>
@@ -72,3 +76,5 @@ export default Rooms;
 //   </button>
 //   </div> ))
 //    }
+
+// {user[Object.keys(user)[9]]}

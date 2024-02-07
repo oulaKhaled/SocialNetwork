@@ -9,17 +9,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Register from './components/RegisterPage';
 import { AuthProvider } from './context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 import Login from './components/LoginPage';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-   <Router> 
+<React.StrictMode>
+ <Router> 
    <AuthProvider>
       <App />
       </AuthProvider>
    </Router>
-  </React.StrictMode>
+</React.StrictMode>
 
 );
 

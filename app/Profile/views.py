@@ -119,11 +119,11 @@ class ProfileView(viewsets.ModelViewSet):
             response = {"message": "something went wrong"}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=["GET"])
-    def get_home_page_posts(request, user):
-        user = request.uer
-        following_list = Following.objects.filter(user=user)
-        post_list = Post.objects.filter(id=following_list.id)
+    # @action(detail=False, methods=["GET"])
+    # def get_home_page_posts(request, user):
+    #     user = request.uer
+    #     following_list = Following.objects.filter(user=user)
+    #     post_list = Post.objects.filter(id=following_list.id)
 
 
 @permission_classes([IsAuthenticated])
@@ -162,9 +162,6 @@ class FollowingView(viewsets.ModelViewSet):
     def list(self, request):
         user = request.user
         following = Following.objects.filter(user=user)
-        print(following.values())
-        print("user :", user)
-        print("user_id :", user.id)
         serializer = FollowingSerializers(following, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

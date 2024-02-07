@@ -52,7 +52,7 @@ const {login}=useContext(AuthContext)
                 <Button variant="secondary"  type="submit" >Log in</Button>
                 <br/>
                 <div>
-              <h1 style={{  fontSize:"20px"}} >DON'T HAVE AN ACCOUNT? </h1>
+              <h1 style={{  fontSize:"20px"}} >DON'T YOU  HAVE AN ACCOUNT? </h1>
               </div>
                 <Button variant="outline-secondary" onClick={()=> 
                 navigate("/register")} >Register</Button>

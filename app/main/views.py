@@ -13,10 +13,13 @@ from rest_framework.decorators import action
 from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.parsers import JSONParser
-from django.contrib.auth.models import User
+
+# from django.contrib.auth.models import User
+
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from Profile.models import User
 
 
 @permission_classes([IsAuthenticated])
@@ -50,19 +53,21 @@ class CommentView(viewsets.ModelViewSet):
 class PostView(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializers
+
     # authentication_classes = (TokenAuthentication,)
     # permission_classes = (IsAuthenticated,)
-
-    def list(self, request, pk):
-        post = Post.objects.filter(author=pk)
-        if post:
-            serializer = PostSerializers(post, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+    @action(detail=True, methods=["GET"])
+    def get_post_author(self, request, pk):
+        user = User.objects.get(id=pk)
+        posts = Post.objects.filter(author=user)
+        if posts:
+            serializer = PostSerializers(posts, many=True)
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         else:
-            response = {"message": "the suthor has no posts"}
+            response = {"message": "there is no posts for this aurthor "}
             return Response(response, status=status.HTTP_404_NOT_FOUND)
 
-        return super().list(request, *args, **kwargs)
+        print("User :", user, " POsts : ", posts)
 
     @action(detail=True, methods=["GET"])
     def get_related_comments(self, request, pk):

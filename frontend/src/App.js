@@ -9,6 +9,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "./App.css"
 import Rooms from "./components/Rooms";
 import ChatRoom from "./components/ChatRoom";
+import Profile from "./components/Profile";
+
+
+
+
+
 
 function App(){
   return(
@@ -19,6 +25,9 @@ function App(){
           <Route  path="/register" element={<Register/>}   />
           <Route path="/chat" element={<ChatRoom/>}/>
           <Route path="/rooms" element={<Rooms/>}/>
+          <Route path="/rooms" element={<Rooms/>}/>
+          <Route path="/profile" element={<Profile/>}/>
+          
 
 
 </Routes>

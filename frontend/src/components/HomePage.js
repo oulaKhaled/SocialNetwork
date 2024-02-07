@@ -10,20 +10,26 @@ import Login from './LoginPage';
 
 import { BASE_URL } from '../context/AuthContext';
 
+import Nav from 'react-bootstrap/Nav';
 
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 function Home({children}) {
 const navigate=useNavigate();
 const [following,setFollowing]=useState([]);
+const followingIds=[];
+
 
 const {user,logout,authToken}=useContext(AuthContext);
-//const[posts,SetPost]=useState([]);
 let posts=[];
+
+const [posts2,SetPosts]=useState();
 
 //method to get the following fot user
 const getFollowing = async()=>{
+  if(authToken){
   console.log("TOKEN : ",authToken.access);
+ try{
   let response= await fetch(`${BASE_URL}profile/following/`,{
     method:"GET",
     headers:{
@@ -33,84 +39,134 @@ const getFollowing = async()=>{
     
     }
   })
-    if(response.status===200){
+
   let data= await response.json()
 
 setFollowing(data)
+}catch(error){
+  console.log(error);
  }
- else{
-  console.log('Failed to fetch data:', response.statusText);
- }
+}
+else{
+  navigate("/login")
+}
+
 }
 
 
-
-
-//get all posts that is related to the followings
-
-
-// method to get all id's for the following users to fetch their posts
-// const getPosts2=()=>{
-//   const  values=Object.values(following)
-//   values.map(value=>(
-//    posts.push(value[Object.keys(value)[0]])
-//   ))
-//   console.log(posts);
-//  const arraLength=posts.length
-//  const i=0;
-//  while(i<arraLength){
-  
-//   const getPost= async ()=>{
-//     let response= await fetch(`${BASE_URL}post/${posts[i]}`,{
-//       method:"GET",
-//       headers:{
-//       "Authorization":`Bearer ${authToken.access}`,
-//       "Content-Type":"application/json"
-//     },
-//     })
-//     let data= await response.json()
-//     console.log(data);
-//     i++;
-  
-//   }
-//  }
-//  }
 useEffect(()=>{
-
   getFollowing()
-  
 
-  
 },[])
 
 
 
+const getPost= async (id)=>{
+      let response= await fetch(`${BASE_URL}post/${id}/get_post_author/`,{
+        method:"GET",
+        headers:{
+        "Authorization":`Bearer ${authToken.access}`,
+        "Content-Type":"application/json"
+      },
+   
+      })
+      let data= await response.json()
+
+
+      console.log("Fetched Posts for user : ",id," Data : ", data);
+      console.log("Content of Posts :",);
+      posts.push(data[0].content)
+    }
+
+
+const getAllPosts= async ()=>{
+  const id=Object.values(following)
+
+  following.map(f=>(
+    followingIds.push(f.following)
+   ))
+ 
+  for( let i=0;i<=followingIds.length;i++){
+    const Ids = followingIds[i]
+    try{
+      await getPost(Ids)
+    }
+    catch{
+    
+    }
+  } }
+    
+
+
 useEffect(()=>{
   console.log("following :",following);
-  // getPosts2()
-  const id=Object.values(following)
-},[following])
+ 
+  
+  
+  getAllPosts();
+ 
+  console.log("Posts :",posts);
+  SetPosts(posts)
+  console.log(" POSTS 2 :",posts2);
+  console.log("Type POst :", typeof posts); 
+  console.log("Type POst2 :", typeof posts2); 
 
+  // console.log("Type of Posts : ", typeof posts);
 
+},[following]);
 
   return (
     <>    
-    <div className="App">
+   {user &&
+    <div style={{fontSize:"28px",backgroundColor:'grey', fontFamily:'Oswald'}}>
+        <Nav variant="tabs" defaultActiveKey="/home">
+       <Nav.Item>
+        <Nav.Link href="/home"> <p>Active</p></Nav.Link>
+       </Nav.Item>
+       <Nav.Item>
+        <Nav.Link href="/profile"> <p>Profile</p></Nav.Link>
+       </Nav.Item>
+      
+       <Nav.Item>
+       <h2  style={{margin:"10px"}} onClick={logout}> Logout </h2>
+       </Nav.Item>
+      </Nav>
+      
+      <div className="App">
+     <header className="App-header">
+      <br/>
+      
+          <h1 style={{}}> Welcome to HOME PAGE  </h1>
+          {/* <button onClick={getFollowing}> Click To get Following </button>
+          <button onClick={getAllPosts}> Click To get Posts  </button> */}
+          
+      <br/>
+       <h1>{user.username}</h1>
+
+
+       {/* Display All Posts */}
+{/* <ul>
+  { posts2 && posts2.map(post=>(
+    <li>{post.content}</li>
+  ))}
+</ul> */}
+
+
+       </header>
+</div>
+</div>
+      }
+      {user? (<div className="App"> 
       <header className="App-header">
-      {user && <h1 style={{}}> HOME PAGE   {user.username} </h1>} 
-      {user? (<div> 
-      <p onClick={logout}> Logout </p>
+      </header>
       </div>
       ):(
         <div>
       <h1 > Welcome To Blogz App Please log in</h1> <Link to={"/login"}> Login </Link>
       </div>)}
       
-      </header>
-     
-    </div>
-
-    </>
+  </>
+   
 
   );
 }
