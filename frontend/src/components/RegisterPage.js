@@ -121,11 +121,11 @@ const handelClick=(e)=>{
       </Form.Floating>
 <br/>
       <Stack gap={2}>
-      <Button variant="secondary" onClick={handelClick}>Register</Button>
+      <Button variant="primary" onClick={handelClick}>Register</Button>
       <div>
      <h1 style={{  fontSize:"20px"}} >ALREADY HAVE AN ACCOUNT? </h1>
      </div>
-      <Button variant="outline-secondary" onClick={()=>{
+      <Button variant="primary" onClick={()=>{
   return navigate("/login");
 
 }} >Login</Button>

@@ -14,7 +14,7 @@
 }
 
 .App-header {
-  background-color:#EEE7DA;
+  background: #ffff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -56,4 +56,8 @@ h1{
   position: 'relative';
   width: '200px'; 
   height: '200px'; 
+}
+#floatingInputCustom{
+  
+
 }

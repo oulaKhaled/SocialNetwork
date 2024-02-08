@@ -36,7 +36,11 @@ let response=  await fetch(`${BASE_URL}token/`,{
     let data =await response.json();
    
     if(response.status===200){
+        console.log("DATA ACCESS : ",data.access);
+        console.log("DATA REFRESH : ",data.refresh);
+        
         setAuthToken(data);
+      
        setUser(jwtDecode(data.access))
        localStorage.setItem("authToken",JSON.stringify(data))
         navigate("/")
@@ -48,7 +52,21 @@ let response=  await fetch(`${BASE_URL}token/`,{
   
 };
 
+// useEffect(()=>{
+    
+//     console.log("AUTHTOKEN :" ,authToken);
 
+
+// },[])
+// useEffect(()=>{
+// if(authToken){
+
+
+//     console.log(" TOKEN REFRESH : ",authToken.refresh);
+// }    
+
+    
+// },[authToken])
 let logout=()=>{
     setAuthToken(null);
     setUser(null);

@@ -1,7 +1,7 @@
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useContext, useEffect, useState } from 'react';
-import { Button } from 'bootstrap';
+
 // import { AuthProvider } from './components/LoginPage';
 import AuthContext from '../context/AuthContext';
 import { AuthProvider } from '../context/AuthContext';
@@ -9,11 +9,21 @@ import { Link } from 'react-router-dom';
 import Login from './LoginPage';
 
 import { BASE_URL } from '../context/AuthContext';
-
 import Nav from 'react-bootstrap/Nav';
-
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import Stack from 'react-bootstrap/esm/Stack';
+import Button from 'react-bootstrap/Button';
+
+
+
+
+
+
+
+
+
+
 function Home({children}) {
 const navigate=useNavigate();
 const [following,setFollowing]=useState([]);
@@ -21,9 +31,9 @@ const followingIds=[];
 
 
 const {user,logout,authToken}=useContext(AuthContext);
-let posts=[];
+ let Getposts=[];
 
-const [posts2,SetPosts]=useState();
+const [posts,SetPosts]=useState([]);
 
 //method to get the following fot user
 const getFollowing = async()=>{
@@ -39,19 +49,16 @@ const getFollowing = async()=>{
     
     }
   })
-
   let data= await response.json()
-
-setFollowing(data)
-}catch(error){
+    setFollowing(data)
+    }catch(error){
   console.log(error);
- }
-}
-else{
+     }
+      }
+      else{
   navigate("/login")
-}
+      }}
 
-}
 
 
 useEffect(()=>{
@@ -71,19 +78,19 @@ const getPost= async (id)=>{
    
       })
       let data= await response.json()
-
-
-      console.log("Fetched Posts for user : ",id," Data : ", data);
-      console.log("Content of Posts :",);
-      posts.push(data[0].content)
+   
+ 
+    console.log("Fetched Posts for user : ",id," Data : ", data.content);
+   SetPosts(prev=>[...prev,...data])
+    
+  
+      
     }
 
 
 const getAllPosts= async ()=>{
-  const id=Object.values(following)
-
-  following.map(f=>(
-    followingIds.push(f.following)
+  following.map(item=>(
+    followingIds.push(item.following)
    ))
  
   for( let i=0;i<=followingIds.length;i++){
@@ -94,70 +101,54 @@ const getAllPosts= async ()=>{
     catch{
     
     }
-  } }
+  
+}}
     
 
+  useEffect(()=>{
 
-useEffect(()=>{
-  console.log("following :",following);
- 
+    getAllPosts()
+   
   
-  
-  getAllPosts();
- 
-  console.log("Posts :",posts);
-  SetPosts(posts)
-  console.log(" POSTS 2 :",posts2);
-  console.log("Type POst :", typeof posts); 
-  console.log("Type POst2 :", typeof posts2); 
+},[following])
 
-  // console.log("Type of Posts : ", typeof posts);
 
-},[following]);
+
+
+
 
   return (
     <>    
    {user &&
-    <div style={{fontSize:"28px",backgroundColor:'grey', fontFamily:'Oswald'}}>
-        <Nav variant="tabs" defaultActiveKey="/home">
-       <Nav.Item>
-        <Nav.Link href="/home"> <p>Active</p></Nav.Link>
-       </Nav.Item>
-       <Nav.Item>
-        <Nav.Link href="/profile"> <p>Profile</p></Nav.Link>
-       </Nav.Item>
-      
-       <Nav.Item>
-       <h2  style={{margin:"10px"}} onClick={logout}> Logout </h2>
-       </Nav.Item>
-      </Nav>
-      
       <div className="App">
      <header className="App-header">
       <br/>
-      
           <h1 style={{}}> Welcome to HOME PAGE  </h1>
-          {/* <button onClick={getFollowing}> Click To get Following </button>
-          <button onClick={getAllPosts}> Click To get Posts  </button> */}
-          
       <br/>
-       <h1>{user.username}</h1>
+    
+  
+       <Button variant="primary" onClick={logout} size="lg"> Logout </Button>
+       <br/>
+       <Button variant="primary" onClick={()=> {navigate("/profile")}} size='lg'> profile </Button>
+       <br/>
+       <Button variant="primary" onClick={()=> {navigate("/rooms")}} size='lg'> Chat Rooms </Button>
+       
 
-
+      
        {/* Display All Posts */}
-{/* <ul>
-  { posts2 && posts2.map(post=>(
+<ul>
+  {/* { posts && posts.map(post=>(
     <li>{post.content}</li>
-  ))}
-</ul> */}
-
-
+  ))} */}
+</ul>
        </header>
+      
 </div>
-</div>
+
       }
       {user? (<div className="App"> 
       <header className="App-header">
+     
       </header>
       </div>
       ):(

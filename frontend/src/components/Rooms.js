@@ -22,6 +22,7 @@ try{
   
       const data= await response2.json();
       setUser(data)
+      console.log("USERS : ",users);
 
   }
   catch(error){
@@ -51,7 +52,7 @@ return (
         <h1>Welcome to Rooms Page</h1>
         <ul>
           { users && users.map(user=>(
-          <li >{user.username}</li>))}
+          <li > <h1>{user.username}</h1></li>))}
         </ul>
 
         </header>
@@ -61,20 +62,3 @@ return (
 
 }
 export default Rooms;
-{/* {state:{username:item[Object.keys(item)[0]]}}) */}
-
-
-// {item[Object.keys(item)[9]]}
-
-// {value.map((item,key)=> (
-//   <div>      
-// <br/>
-//   <button key={key} onClick={()=> navigate("/chat",)}>
-//   <p key={key}>
-
-//   </p>
-//   </button>
-//   </div> ))
-//    }
-
-// {user[Object.keys(user)[9]]}

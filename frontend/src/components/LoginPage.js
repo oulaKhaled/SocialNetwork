@@ -49,12 +49,13 @@ const {login}=useContext(AuthContext)
 <br/>
           <Stack>
           
-                <Button variant="secondary"  type="submit" >Log in</Button>
+                <Button  variant="primary" type="submit" >Log in</Button>
+              
                 <br/>
                 <div>
               <h1 style={{  fontSize:"20px"}} >DON'T YOU  HAVE AN ACCOUNT? </h1>
               </div>
-                <Button variant="outline-secondary" onClick={()=> 
+                <Button variant="primary" onClick={()=> 
                 navigate("/register")} >Register</Button>
           </Stack>
           </form>

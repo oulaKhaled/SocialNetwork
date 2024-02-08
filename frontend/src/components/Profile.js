@@ -15,27 +15,12 @@ const {user,authToken,logout}=useContext(AuthContext)
 
     
         <div>
-           <div style={{fontSize:"28px",backgroundColor:'grey', fontFamily:'Oswald'}}>
-<Nav variant="tabs" defaultActiveKey="/profile">
-       <Nav.Item>
-        <Nav.Link href="/"> <p>Active</p></Nav.Link>
-       </Nav.Item>
-       <Nav.Item>
-        <Nav.Link href="/profile"><p>Profile</p></Nav.Link>
-       </Nav.Item>
-     
-       <Nav.Item>
-       <h2  style={{margin:"10px"}} onClick={logout}><p> Logout</p> </h2>
-       </Nav.Item>
-      </Nav>
-      </div>
+          
         <div className="App">
             <header className="App-Header">
-            <h1> Profile Page  </h1>
+            <h1> Profile Page {user.username}  </h1>
            <div className="container">
-            {/* <Col xs={7} md={8}  >
-                 <Image className="profile" src={require('')}  roundedCircle />
-               </Col> */}
+           
                </div>
             </header>
         </div>
