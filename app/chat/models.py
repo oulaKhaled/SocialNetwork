@@ -21,7 +21,7 @@ class Group(models.Model):
         blank=False,
         related_name="user2",
     )
-    date = models.DateTimeField(null=False, default=date.today, blank=False)
+    date = models.DateField(null=False, default=date.today, blank=False)
 
     class Meta:
         unique_together = (("user1", "user2"),)

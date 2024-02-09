@@ -12,8 +12,6 @@ import Row from 'react-bootstrap/Row'
 const Profile=()=>{
 const {user,authToken,logout}=useContext(AuthContext)
     return(
-
-    
         <div>
           
         <div className="App">

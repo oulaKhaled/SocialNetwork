@@ -47,7 +47,7 @@ let response=  await fetch(`${BASE_URL}token/`,{
     
     }
     else{
-        alert("Something goes wrong");
+        alert("We couldn't find an account associated with the provided credentials");
     }
   
 };
@@ -100,7 +100,7 @@ let updateToken= async ()=>{
 // when the component unmounts or when the dependencies (authTokens and loading) change.
 
  useEffect(()=>{
-    let fourMinutes=1000*4*60
+    let fourtyMinutes=1000*4*60
         const interval=setInterval(()=>{
             if(authToken){
                 console.log("Token Updated");
@@ -108,7 +108,7 @@ let updateToken= async ()=>{
                
             }
            
-        },fourMinutes)
+        },fourtyMinutes)
         return ()=>clearInterval(interval);
 
 },[authToken,loading])

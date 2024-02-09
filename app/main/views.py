@@ -69,6 +69,17 @@ class PostView(viewsets.ModelViewSet):
 
         print("User :", user, " POsts : ", posts)
 
+    # def list(self, request, pk):
+    #     post = Post.objects.filter(author=pk)
+    #     print("custom list method is being called", post)
+    #     if post:
+    #         serializer = PostSerializers(post)
+    #         print("custom list method is being called", serializer.data)
+    #         return Response(serializer.data, status=status.HTTP_200_OK)
+    #     else:
+    #         return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
+    #     return super().list(request, *args, **kwargs)
+
     @action(detail=True, methods=["GET"])
     def get_related_comments(self, request, pk):
         try:

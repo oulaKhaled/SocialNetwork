@@ -5,13 +5,26 @@ from .models import Group, Message
 from Profile.models import User
 
 
+def create_Group(user1, user2):
+    user1_obj = User.objects.get(id=user1)
+    user2_obj = User.objects.get(id=user2)
+    newGroup = Group.objects.create(user1=user1_obj, user2=user2_obj)
+    newGroup.save()
+    return newGroup
+
+
 class ChatConsumer(AsyncWebsocketConsumer):
     # This method is called when a client connects to the WebSocket server.
+
     async def connect(self):
         user1 = self.scope["url_route"]["kwargs"]["user1"]
         user2 = self.scope["url_route"]["kwargs"]["user2"]
+        if int(user1) > int(user2):
+            self.room_name = f"{user1}_{user2}"
+        else:
+            self.room_name = f"{user2}_{user1}"
 
-        self.room_name = f"{user1}_{user2}"
+        sync_to_async(create_Group(user1, user2))
         self.room_group_name = "chat_%s" % self.room_name
         # self.user = self.scope["user"]
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)

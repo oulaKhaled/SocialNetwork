@@ -12,6 +12,7 @@ from django.contrib.auth.models import (
     BaseUserManager,
 )
 from django.conf import settings
+from datetime import date
 
 # Create your models here.
 
@@ -27,7 +28,7 @@ class PostManager(models.Manager):
 
 class Post(models.Model):
     content = models.CharField(max_length=400, null=True, default=None)
-    date = models.DateTimeField(auto_now=True)
+    date = models.DateField(default=date.today)
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False
     )
@@ -42,6 +43,9 @@ class Post(models.Model):
 
     def __str__(self):
         return f"{self.content} - {self.author.username}"
+
+    def author_username(self):
+        return self.author.username
 
 
 class Likes(models.Model):

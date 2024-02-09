@@ -38,6 +38,7 @@ useEffect(()=>{
 },[])
 useEffect(()=>{
     console.log("user",users);
+    console.log("USER ",user);
    
 },[users])
       
@@ -50,13 +51,21 @@ return (
         <div className="App">
         <header className="App-header">
         <h1>Welcome to Rooms Page</h1>
-        <ul>
-          { users && users.map(user=>(
-          <li > <h1>{user.username}</h1></li>))}
-        </ul>
+       
 
         </header>
         </div>
+        <div style={{top:100,position:"absolute"}}>
+        <ul >
+          { users &&  users.map(user1=>(
+            user.user_id !== user1.id && 
+            <li   onClick={()=>{navigate("/chat",{state:user1.id})}}>
+      <h1 >{user1.username}</h1></li>))
+          }
+         
+        </ul>
+        </div>
+        
         </>
     );
 

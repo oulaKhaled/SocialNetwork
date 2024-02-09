@@ -15,7 +15,7 @@ const location=useLocation();
 const [newmessage,setnewMessages]=useState([])
 
 let newdata=[];
-const user2=location.state.username;
+const user2=location.state;
 console.log();
 
 const {user}=useContext(AuthContext);
@@ -47,10 +47,6 @@ useEffect(()=>{
             }
     
     },[message])
-
-
-   
-
 
 // setnewMessages( newmessage=> [...newmessage,data.message]) 
     return(

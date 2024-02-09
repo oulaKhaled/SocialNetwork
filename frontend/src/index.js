@@ -10,15 +10,17 @@ import Register from './components/RegisterPage';
 import { AuthProvider } from './context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from './components/LoginPage';
+import 'font-awesome/css/font-awesome.min.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-<React.StrictMode>
+
  <Router> 
    <AuthProvider>
       <App />
       </AuthProvider>
    </Router>
-</React.StrictMode>
+
 
 );
 
