@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Post, Likes, Comment
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+from django.core.exceptions import ValidationError
 
 
 # class UserSerializers(serializers.ModelSerializer):
@@ -30,6 +31,13 @@ class PostSerializers(serializers.ModelSerializer):
             "comments_count",
             "author_username",
         ]
+
+    # def validate(self, attrs):
+    #     image = attrs.get("image")
+    #     content = attrs.get("content")
+    #     if not content and not image:
+    #         return ValidationError("Post is Empty, please add something ")
+    #     return attrs
 
 
 class LikeSerializers(serializers.ModelSerializer):

@@ -48,6 +48,11 @@ useEffect(()=>{
     
     },[message])
 
+
+const CreateGroup= async()=>{
+    
+}    
+
 // setnewMessages( newmessage=> [...newmessage,data.message]) 
     return(
         <div className="App">

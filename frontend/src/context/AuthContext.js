@@ -16,10 +16,10 @@ export const AuthProvider=({ children })=>{
 
    // check if authToken is in Local storge and set it as initial value
    //  make it more efficient by using a callback function,this means this value will only be set once on the inital load and it won't call it every single time
-  const [authToken,setAuthToken]=useState( ()=>localStorage.getItem("authToken")? JSON.parse(localStorage.getItem("authToken")):null);  
-  const [user, setUser]=useState(()=>localStorage.getItem("authToken")? jwtDecode(localStorage.getItem("authToken")):null);
-  const navigate=useNavigate();
-  const [loading,setLoading]=useState(false);
+const [authToken,setAuthToken]=useState( ()=>localStorage.getItem("authToken")? JSON.parse(localStorage.getItem("authToken")):null);  
+const [user, setUser]=useState(()=>localStorage.getItem("authToken")? jwtDecode(localStorage.getItem("authToken")):null);
+const navigate=useNavigate();
+const [loading,setLoading]=useState(true);
 
     
 const login= async (e)=>{
@@ -51,22 +51,6 @@ let response=  await fetch(`${BASE_URL}token/`,{
     }
   
 };
-
-// useEffect(()=>{
-    
-//     console.log("AUTHTOKEN :" ,authToken);
-
-
-// },[])
-// useEffect(()=>{
-// if(authToken){
-
-
-//     console.log(" TOKEN REFRESH : ",authToken.refresh);
-// }    
-
-    
-// },[authToken])
 let logout=()=>{
     setAuthToken(null);
     setUser(null);
@@ -81,7 +65,7 @@ let updateToken= async ()=>{
         headers:{
             "Content-Type":"application/json"
         },
-        body:JSON.stringify({"refresh":authToken.refresh})
+        body:JSON.stringify({"refresh":authToken?.refresh})
     })
     let data =await response.json();
     if(response.status===200){
@@ -92,7 +76,9 @@ let updateToken= async ()=>{
     else{
        logout();
     }
-    
+    if(loading){
+        setLoading(false)
+    }
 }
 
 
@@ -100,15 +86,20 @@ let updateToken= async ()=>{
 // when the component unmounts or when the dependencies (authTokens and loading) change.
 
  useEffect(()=>{
-    let fourtyMinutes=1000*4*60
+    if(loading){
+                updateToken()
+    }
+    let fourMinutes=1000*40*60
         const interval=setInterval(()=>{
             if(authToken){
-                console.log("Token Updated");
+            
                 updateToken()
+                console.log("Token Updated");
                
             }
            
-        },fourtyMinutes)
+           
+        },fourMinutes)
         return ()=>clearInterval(interval);
 
 },[authToken,loading])
@@ -120,7 +111,7 @@ const context={
     authToken:authToken,
 };
 return(
-        <AuthContext.Provider value={context}>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={context}>{ loading? null :children}</AuthContext.Provider>
     );
 };
 

@@ -3,6 +3,7 @@ from typing import Any
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+
 from django.contrib.auth.models import UserManager, BaseUserManager
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import (
@@ -18,11 +19,11 @@ from datetime import date
 
 
 class PostManager(models.Manager):
-    def create(self, content, image, author, **extra_fields):
-        if not content and not image:
-            raise ValidationError("Post is Empty, Please Add something")
-        else:
-            post = self.create(author, content, image, **extra_fields)
+    def create(self, content=None, image=None, **kwargs: Any):
+        if content is None and image is None:
+            raise ValidationError(" Post is Empty , please add something ")
+        post = self.model(content=content, image=image, **kwargs)
+        post.save(using=self._db)
         return post
 
 

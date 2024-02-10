@@ -1,7 +1,5 @@
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useContext, useEffect, useState } from 'react';
-
 // import { AuthProvider } from './components/LoginPage';
 import AuthContext from '../context/AuthContext';
 import { AuthProvider } from '../context/AuthContext';
@@ -15,13 +13,19 @@ import Stack from 'react-bootstrap/esm/Stack';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAtom,faHeart,faComment,faMessage } from '@fortawesome/free-solid-svg-icons'
-
+import { faAtom,faHeart,faComment,faMessage,faFile } from '@fortawesome/free-solid-svg-icons'
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import Form from 'react-bootstrap/Form';
 
 function Home({ children }) {
   const navigate = useNavigate();
   const [following, setFollowing] = useState([]);
   const followingIds = [];
+  const [newpost,setNewPost]=useState({
+    "content":"",
+    "image":""
+  })
 
 
   const { user, logout, authToken } = useContext(AuthContext);
@@ -98,15 +102,75 @@ function Home({ children }) {
   }
 
 
+const newPost= async ()=>{
+let response= await fetch(`${BASE_URL}post/`,{
+  method:"POST",
+  headers:{
+    "Content-Type":"application/json",
+    "Authorization":`Bearer ${authToken.access}`
+  },
+  body:JSON.stringify({"content":newpost.content,"image":newPost.image,"author":user.user_id})
+})
+let data = await response.json()
+console.log("new Post response ",data);
+
+}
+const deletePost= async()=>{
+
+}
+const updatePost=async()=>{
+
+}
+const AddComment= async()=>{
+
+}
+const AddLike=async()=>{
+
+}
+
+const SendFriendRequest= async()=>{
+
+}
+const acceptFriend= async()=>{
+
+}
+
+
+
   useEffect(() => {
     getAllPosts()
   }, [following])
+
+const handelNewPost=(e)=>{
+  
+  if(e.target.name==="content"){
+    setNewPost(prev=>({
+      ...prev,
+     content: e.target.value}))
+  }
+  else{
+setNewPost(
+  prev=>({
+    ...prev,
+    image :e.target.value}))
+  }
+
+  
+
+}
+
+const HandelClick=(e)=>{
+console.log("new post : ",newpost);
+newPost()
+  
+}
 
 
   return (
     <>
       {user &&
      <div>
+
      <FontAwesomeIcon icon="fa-solid fa-heart" />
     
      <h1 style={{position:"relative",
@@ -119,53 +183,68 @@ function Home({ children }) {
            <Button variant="primary" className='HomeButtons' onClick={() => { navigate("/profile") }} size='lg'> profile </Button>
            <br />
            </Stack>
-           
+        
            <Button variant="primary" style={{position: 'absolute',
     top:0,
     right:0,
     margin:"30px",
 }} onClick={() => { navigate("/rooms") }} size='lg'> <FontAwesomeIcon icon={faMessage} size="2x"  /> </Button>
 
+
+{/* *****************************Post Form ******************************/}
+<div style={{left:"28%",position:"relative",bottom:"100px",marginTop:"30px",paddingLeft:"50px",paddingTop:"20px",hight:"100px",width:"40%"}}>
+        <Form.Label>Add new Post</Form.Label>
+        <Form.Control as="textarea" rows={10}  style={{ width:"500px",height:"60px",}} name='content' onChange={handelNewPost} />
+        <Form.Control type='file'  style={{width:"500px",height:"40px"}} name='image' onChange={handelNewPost}/>
+        <FontAwesomeIcon icon={faFile} />
+        <br/>
+        <Button onClick={HandelClick}>Add new post </Button>
+   </div>
+
+{/***************************************** **********************************/}
+
         <div className="App">
           <header className="App-header">
           { posts && posts.map(post=>(
+            <Row xs={1} md={2} className="g-4">
+          <Col>
           <Card 
           border='primary'
-          style={{ width: '40rem',display:"flex" ,margin:"20px",border:"solid "}}
-       > 
+          style={{ width: '40rem',display:"flex" ,margin:"30px",}}> 
            <Card.Body style={{ position: "relative" }}>
+           {/* <Card.Img  variant="top" src={`http://127.0.0.1:8000/media/${post.image}`} /> */}
             <Card.Title style={{position:"absolute", left: 0, marginLeft: "10px", marginTop:"0px",fontWeight:"bold"}}>{post.author_username} </Card.Title>
             <Card.Title> <h6 style={{position:"absolute", right: 0, marginRight:"10px" }}>{post.date}</h6></Card.Title>
             <Card.Text style={{marginTop:"40px"}}>
               {post.content}
-             <img src={post.image}/> 
-             
+              {post.image &&
+                <img  src ={`../app/media${post.image}`}/> 
+              }
             </Card.Text>
           </Card.Body>
         
-          <div style={{ left: 0,bottom:-2, position:"relative",}}>
+          <div style={{ left: 0,bottom:0}}>
           <Card.Header  > <FontAwesomeIcon icon={faComment}/> {post.comments_count}  <br/>
           <FontAwesomeIcon icon={faHeart} /> {post.likes_count} 
 </Card.Header>
 </div>
  </Card>
+ </Col>
+ </Row>
       
           ))} 
   
+  <img alt='./app/media/images/carrot.jpg'/>
           </header>
         </div>
        
         
         </div>  }
-      {user ? (<div className="App">
-        <header className="App-header">
-
-        </header>
-      </div>
-      ) : (<div></div>)}
+     
 
     </>
   );
 }
 
 export default Home;
+// http://127.0.0.1:8000/images/carrot.jpg

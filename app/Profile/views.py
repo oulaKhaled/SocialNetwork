@@ -38,6 +38,17 @@ class ProfileView(viewsets.ModelViewSet):
     # authentication_classes = (TokenAuthentication,)
     # permission_classes = (IsAuthenticated,)
 
+    def retrieve(self, request, pk):
+        user = User.objects.get(id=pk)
+        profile = Profile.objects.filter(user=user)
+        if profile:
+            serializer = ProfileSerializers(profile, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {"error": " Profile not found"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
     @action(detail=True, methods=["GET"])
     def get_post(self, request, pk):
         try:
@@ -118,12 +129,6 @@ class ProfileView(viewsets.ModelViewSet):
         except:
             response = {"message": "something went wrong"}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
-
-    # @action(detail=False, methods=["GET"])
-    # def get_home_page_posts(request, user):
-    #     user = request.uer
-    #     following_list = Following.objects.filter(user=user)
-    #     post_list = Post.objects.filter(id=following_list.id)
 
 
 @permission_classes([IsAuthenticated])
