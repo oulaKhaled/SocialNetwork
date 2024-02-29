@@ -82,19 +82,15 @@ class PostView(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["GET"])
     def get_related_comments(self, request, pk):
-        try:
-            comments = Comment.objects.filter(post=pk)
+        post = Post.objects.get(id=pk)
+        print("post id :", post.id)
+        comments = Comment.objects.filter(post=pk)
+        if comments:
             serializer = CommentSerializers(comments, many=True)
-            post = Post.objects.get(id=pk)
-            post_serializer = PostSerializers(post)
-            if comments:
-                response = {"post": post_serializer.data, "comments": serializer.data}
-                return Response(response, status=status.HTTP_202_ACCEPTED)
-            else:
-                response = {"message": "no comments yet"}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
-        except:
-            response = {"message": "Something goes wrong"}
+            print("comment serilizer ", serializer.data)
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        else:
+            response = {"message": "no comments yet"}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
 
