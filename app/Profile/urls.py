@@ -8,6 +8,7 @@ from .views import (
     UserView,
     FriendRequestView,
     UserRegister,
+    SocialView,
 )
 
 router = routers.DefaultRouter()
@@ -17,6 +18,7 @@ router.register("following", FollowingView)
 router.register("user", UserView)
 router.register("register", UserRegister)
 router.register("friendRequest", FriendRequestView)
+router.register("social", SocialView)
 
 
 urlpatterns = [

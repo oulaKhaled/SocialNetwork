@@ -25,7 +25,7 @@ import Profile from './Profile';
 import { IoIosNotifications } from "react-icons/io";
 import { IoChatboxOutline } from "react-icons/io5";
 import { IoIosSend } from "react-icons/io";
-
+import { useRef } from 'react';
 
 
 
@@ -40,6 +40,10 @@ function Home({ children }) {
     "content":"",
     "image":""
   })
+
+  let  firstRender=useRef(true);
+
+  
 const postIds=[];
 
   const { user, logout, authToken } = useContext(AuthContext);
@@ -47,6 +51,7 @@ const postIds=[];
 
   const [posts, SetPosts] = useState([]);
   const[comments,SetComments]=useState([]);
+  const [newComment,setNewComment]=useState([]);
 
   ///////////////method to get the following for user//////////////////
   const getFollowing = async () => {
@@ -65,27 +70,27 @@ const postIds=[];
         let data = await response.json()
         console.log("FOLLOWİNG DATA :",data);
         setFollowing(data)
-       
       } catch (error) {
         console.log(error);
       }}
       else{
         console.log("error");
       }
+      
     }
   
     //   navigate("/login")
     // }
   
     useEffect(() => {
-      console.log("get following method will get call");
+      console.log("get following method will get call before :",following);
       getFollowing()
+    
   
     }, [])
 
     
 
-  
 
 //////////// get related post for following/////////////
 
@@ -100,8 +105,9 @@ const postIds=[];
     })
     let data = await response.json()
     console.log("Fetched Posts for user : ", id, " Data : ", data);
+    if (Array.isArray(data)){
     SetPosts(prev => [...prev, ...data])
-
+    }
   }
 
 
@@ -109,8 +115,8 @@ const postIds=[];
     following.map(item => (
       followingIds.push(item.following)
     ))
-    console.log("following",following);
-
+    // followingIds.push(user.user_id)
+    // console.log("following",following);
     for (let i = 0; i<followingIds.length;i++) {
       const Ids = followingIds[i]
       try {
@@ -121,78 +127,30 @@ const postIds=[];
         console.log(error);
 
       }
-     
-
     }
-    
+    firstRender.current=true;
   }
+    
+    
+  
   useEffect(()=>{
-    console.log("FOLLOWİNG İN USEeEFFECT :",following);
-    console.log("getAllpost method is calledx");
-    getAllPosts()
-      },[following])
-    
-
-
-
-//////////////////////////
-
-// ///////////display related comments for each post //////////
-const get_related_commnts=async(id)=>{
-      let response=await fetch(`${BASE_URL}post/${id}/get_related_comments/`,{
-          method:"GET",
-          headers:{
-            
-    "Content-Type":"application/json",
-    "Authorization":`Bearer ${authToken.access}`
-
-          }
-      })
-      let data=  await response.json()
-        if (Array.isArray(data)){
-      SetComments(prev=>[...prev,...data])
-
-        }
-      // console.log(`related comments ${data} for each post ${id}  `)
-
-    }
-
-const get_post_id= async()=>{
-  posts.map(post=>(
-    postIds.push(post.id)
-  ))
-  console.log("postIDS ,",postIds);
-  for (let i=0;i<postIds.length;i++){
-  
-  try{
-    console.log("related comment method called , post[ID] : ",postIds[i],i);
-    await get_related_commnts(postIds[i])
-  
+ 
+      if(firstRender.current){
+     firstRender.current=false;
+     return;
    
-
-  }
-  catch{
-    console.log("there is no comment");
-  }
+    }
+    console.log(" Get all post method will get called"); 
     
-  }
 
- }
-useEffect(()=>{
-  console.log("get post Id method will get called ");
-  console.log("comments222222222", comments);
-  
-if(posts.length>3){
-  get_post_id()
-}
-  
-},[posts])
- useEffect(()=>{
-  console.log("COMMENTS : ",comments);
-},[comments])
+    getAllPosts()  
+
+      },[following])
+
+    
 
 
-/////////////////////////////////////////////////////////
+
 
 
 ////////////new post //////////////////
@@ -230,19 +188,13 @@ const newPost= async ()=>{
       
     }
   
-  const AddComment= async()=>{
-  
-  }
+   
+      
   const AddLike=async()=>{
   
   }
   
-  // const SendFriendRequest= async()=>{
-  
-  // }
-  // const acceptFriend= async()=>{
-  
-  // }
+
   
 
   return (
@@ -276,7 +228,7 @@ const newPost= async ()=>{
         <Navbar.Collapse className="justify-content-end">
        
        <Navbar.Text >
-           <a onClick={()=>{navigate("/profile")}}><h1>{user.username}</h1></a>
+           <a onClick={()=>{navigate("/profile",{state:{props2:user.user_id}})}}><h1>{user.username}</h1></a>
           </Navbar.Text>
           <IoIosNotifications size={"33px"}  style={{position:"relative", left:50}}/>
           <IoChatboxOutline  size={"33px"}  style={{position:"relative", left:70} } onClick={()=>{navigate("/rooms")}}/>
@@ -315,13 +267,11 @@ const newPost= async ()=>{
        likes_count={post.likes_count}
        date={post.date}
        add_like={AddLike}
-       add_comment={AddComment}
-       image={require("../images/picture.jpg")}
-       comments={
-      comments && comments.map((comment,key)=>(
-        comment.post===post.id? <p key={key}> {comment.content}</p>: null
-      ))
-     }
+      
+       author={post.author}
+       posts={posts}
+       id={post.id}
+       
        
        />
      
@@ -331,8 +281,10 @@ const newPost= async ()=>{
     
       ))}
       </div>
-      <button onClick={()=>{ console.log("comments :",comments)}}> Click </button>
-      <button onClick={()=>{ console.log("posts :",posts)}}> post </button>
+      {/* <button onClick={()=>{ console.log("comments :",comments)}}> Click </button>
+      <button onClick={()=>{ console.log("posts :",posts)}}> post </button> */}
+     
+      
       <ul>
   
 </ul>

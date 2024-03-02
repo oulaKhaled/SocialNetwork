@@ -64,7 +64,7 @@ class Comment(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False
     )
-    date = models.DateTimeField(auto_now=True)
+    date = models.DateField(auto_now=True)
     like = models.IntegerField(
         blank=True,
         null=True,

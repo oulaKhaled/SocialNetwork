@@ -15,7 +15,7 @@ from django.core.exceptions import ValidationError
 class CommentSerializers(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ["like", "content", "post", "get_username"]
+        fields = ["like", "content", "post", "get_username", "date"]
 
 
 class PostSerializers(serializers.ModelSerializer):

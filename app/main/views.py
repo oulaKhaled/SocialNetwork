@@ -31,8 +31,6 @@ class CommentView(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["POST"])
     def add_like(self, request, pk=None):
-        # print(type(request.data["like"]))
-        # the primary key by default is id , you can decide what primary key you want to send instead id
         try:
             if request.data["like"]:
                 comment = Comment.objects.get(id=pk)
@@ -47,6 +45,24 @@ class CommentView(viewsets.ModelViewSet):
         except:
             response = {"message": " Something went worng"}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+    def create(self, request):
+        data = request.data
+        id = data["user_id"]
+        user = User.objects.get(id=id)
+        content = data["content"]
+        like = data["like"]
+        post_id = data["post"]
+        post = Post.objects.get(id=post_id)
+        new_comment = Comment.objects.create(
+            user_id=id, post=post, like=like, content=content
+        )
+        if new_comment:
+            serializer = CommentSerializers(new_comment)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            message = {"message": "something went wrong"}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 @permission_classes([IsAuthenticated])
@@ -98,5 +114,18 @@ class PostView(viewsets.ModelViewSet):
 class LikeView(viewsets.ModelViewSet):
     queryset = Likes.objects.all()
     serializer_class = LikeSerializers
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+
+    def create(self, request):
+        data = request.data
+        post_id = data["post_id"]
+        user_id = data["user_id"]
+        post = Post.objects.get(id=post_id)
+        user = User.objects.get(id=user_id)
+        like = Likes.objects.create(post=post, user=user)
+        if like:
+            serializer = LikeSerializers(like)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {"message": "something went wrong"}, status=status.HTTP_400_BAD_REQUEST
+            )
