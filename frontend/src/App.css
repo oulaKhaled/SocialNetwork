@@ -57,6 +57,7 @@ h1{
 }
 .container{
   position: 'relative';
+  
 
   
 }
@@ -65,10 +66,9 @@ h1{
   height: auto;
   
   border-radius: 1rem;
-  box-shadow: 0px 10px 8px #999;
   display: flex;
   flex-direction: column;
-
+  /* box-shadow: 0px 10px 8px #999; */
   background-color: white;
   height: fit-content;
   justify-content: center;
@@ -226,10 +226,10 @@ margin: 90px;
   height: auto;
   background: rgb(255, 255, 255);
   border-radius: 5px;
-  border: 1px solid rgba(0, 0, 255, .2);
+  /* border: 1px solid rgba(0, 0, 255, .2);
   transition: all .2s;
-  box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, .2);
-
+  box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, .2); */
+  /* box-shadow: 0px 10px 8px #999; */
 
  
 
@@ -240,21 +240,22 @@ margin-top:30px;
 
 padding-top:20px;  */
 position: relative;
-top: 30%;
+top: 80%;
 right:50%;
 margin: 10px;
 
 }
 
-.card2:hover {
+/* .card2:hover {
   box-shadow: -12px 12px 2px -1px rgba(0, 0, 255, .2);
-}
+} */
 
 .input-container {
   position: relative;
   margin: 10px auto;
   width: 200px;
   top: 90;
+  left: 40px;
 }
 
 .input-container input[type="text"] {

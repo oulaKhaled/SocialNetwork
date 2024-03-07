@@ -154,9 +154,9 @@ return(
       <div className="con">
 
 {/*  `..`+props.image        //  image={require(post.image!==null ? `..`+post.image:"../images/picture.jpg" )}
-  <img src={props.image} alt="image"/> */}
+  <img src={props.image} alt="image"/>    src={require('../images/picture.jpg')}}*/ }
         <div className="card-container">
-   
+        <img  alt="image"   />
         <p className="card-description">{props.date}</p>
         <h3 className="card-title" onClick={HandelClick}> {props.author_username}</h3>
         <p className="card-description">{props.content}</p>
@@ -181,7 +181,7 @@ return(
       {/**all comments must be displayed here */}
       {comments && comments.map((comment,key)=>(
         comment.post===props.id? <Card key={key} 
-        style={{backgroundColor:"#EBF3E8", borderRadius: "1rem",margin:"8px"}} >
+        style={{backgroundColor:"#EBF3E8", borderRadius: "1rem",margin:"8px",height:"auto"}} >
         <div style={{display:"flex",flexDirection:"row",}}>
         <Card.Text style={{position:"relative",top:10,left:10}}><h5>{comment.get_username} </h5> </Card.Text>
         <p style={{ padding:"10px",marginLeft:"5px"}}>{comment.date}</p>

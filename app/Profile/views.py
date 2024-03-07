@@ -175,19 +175,34 @@ class FollowingView(viewsets.ModelViewSet):
 class SocialView(viewsets.ModelViewSet):
     queryset = Social.objects.all()
     serializer_class = SocialSerializers
+
     # authentication_classes = (TokenAuthentication,)
     # permission_classes = (IsAuthenticated,)
+    def list(self, request):
+        user_id = request.GET.get("user_id")  # to access query parameters from the URL
+        profile = Profile.objects.get(user=user_id)
+        print("Profile :", profile)
+        print()
+        if profile:
+            account = Social.objects.get(profile=profile)
+            serializer = SocialSerializers(account)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {"messagae": "there is no accounts"}, status=status.HTTP_200_OK
+            )
 
 
 @permission_classes([IsAuthenticated])
 class FriendRequestView(viewsets.ModelViewSet):
     queryset = FriendRequest.objects.all()
     serializer_class = FriendRequestSerializers
-    # authentication_classes = (TokenAuthentication,)
-    # permission_classes = (IsAuthenticated,)
 
-    @action(detail=True, methods=["POST"])  # make sure of having pk
-    def send_friend_request(self, request, pk=None):
+    @action(detail=False, methods=["POST"])  # make sure of having pk
+    def send_friend_request(self, request):
+
+        # reciver = request.data.get("reciver")
+        # print(f" sender {request.user}  reciver {reciver}")
         sender = request.user
         reciver_id = request.data["reciver"]
         if reciver_id:

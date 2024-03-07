@@ -9,15 +9,19 @@ import Row from 'react-bootstrap/Row'
 import { BASE_URL } from "../context/AuthContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart,faComment } from '@fortawesome/free-solid-svg-icons'
-import { MDBCol,MDBBtn, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBTypography, MDBIcon } from 'mdb-react-ui-kit';
+import { MDBCol,MDBBtn, MDBContainer, MDBRow, MDBCard, MDBCardText,MDBListGroupItem,MDBListGroup, MDBBreadcrumbItem,MDBBreadcrumb,MDBCardBody, MDBCardImage,MDBProgressBar, MDBTypography, MDBIcon,MDBProgress } from 'mdb-react-ui-kit';
 import PostCard from "./PostCard";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
+import { useFetcher, useNavigate } from "react-router-dom";
 import { MdEdit } from "react-icons/md";
-import { Card, CardBody,Button,Table } from "react-bootstrap";
-
+import { Card, CardBody,Button } from "react-bootstrap";
+import { Navbar } from "react-bootstrap";
 import { useLocation,useParams } from "react-router-dom";
-
+import { IoIosNotifications } from "react-icons/io";
+import { IoChatboxOutline } from "react-icons/io5";
+import { IoIosSend } from "react-icons/io";
+import { FaGithub } from "react-icons/fa";
+import { FaFacebook, FaLinkedin,FaInstagram, FaTwitter} from "react-icons/fa";
 const Profile=()=>{
 const {user,authToken,logout}=useContext(AuthContext)
 const[Profile,setProfile]=useState([])
@@ -28,7 +32,8 @@ const location=useLocation();
 const Id =location.state.props2;
 let postIds=[];
 
-
+const [social,getSocial]=useState([]);
+const [button,setbutton]=useState("follow")
 
 console.log(" Profile User :",user.user_id);
 
@@ -51,6 +56,45 @@ let getProfile= async ()=>{
 }
 
 
+const SendFriendRequest= async()=>{
+  if(button==="follow"){
+    let response=await fetch(`${BASE_URL}profile/friendRequest/send_friend_request/`,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":`Bearer ${authToken.access}`
+      },
+      body:JSON.stringify({"sender":user.user_id,"reciver":Id})
+    
+    })
+    let data= await response.json();
+    setbutton("requested");
+    console.log("DATA : ",data);
+
+  }
+  else if(button==="followed"){
+    // delete request recored, delete the user recored form following table
+    // setButton("follow")
+  
+  }
+  else if (button==="requested"){
+    // send delete request 
+    // setButton as follow 
+  }
+
+}
+
+
+
+
+
+const EditProfile=()=>{
+
+
+}
+
+
+
 
 let getPosts= async()=>{
 
@@ -59,7 +103,8 @@ let getPosts= async()=>{
         headers:{
             "Content-Type":"application/json",
             "Authorization":`Bearer ${authToken.access}`,
-        }
+       
+          }
     })
     let data=await response.json()
     setPost(data)
@@ -84,12 +129,30 @@ const updatePost=async()=>{
 }
 
 
-// const getSocialAccounts= async()=>{
-//     let response=await fetch(`${BASE_URL}`)
+const getSocialAccounts= async()=>{
+   
+    let response=await fetch(`${BASE_URL}profile/social/?user_id=${Id}`,{
+      method:"GET",
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":`Bearer ${authToken.access}`,
 
-// }
+      },
+    
+      
+    })
+    let data= await response.json();
+    if(data){
+      getSocial(data);
+    }
+      
+
+}
 
 
+useEffect(()=>{
+  getSocialAccounts();
+},[]);
 useEffect(()=>{
 
     getPosts()
@@ -97,67 +160,134 @@ useEffect(()=>{
 },[])
 
 
+useEffect(()=>{
+console.log("Social Acoounts : ",social);
+},[social])
+
 
     return(
       <div  >
-        <IoMdArrowRoundBack size={"50px"}  onClick={()=>{navigate("/")}}/>
-  <Card style={{padding:"5px",width:"1000px",height:"auto",bottom:"50%",top:"50%", margin :" 0 auto ",borderRadius:"2rem"}}>
 
-  {Profile && Profile.map(profile=>(
-  <>
-  <div style={{backgroundColor:"red",padding:"10px"}}>
-        for image 
-        <img/>
-        </div>
-    <div style={{position:"relative",top:400,alignItems:"cneter",left:50}} >
-    
+
+          
+<Navbar className="bg-body-tertiary"  bg="dark" data-bs-theme="dark" style={{
+    width:"100%",
+    backgroundColor:"red"
+  }}>
+    <Container style={{}}>
        
+        <Navbar.Brand href=""><h1 style={{color:"#ffff"}} onClick={()=>{navigate("/")}}>BLOGZ</h1></Navbar.Brand>
+        <Nav className="">
+        <Nav.Link href="">  <h3 style={{color:"#ffff"}} onClick={()=>{navigate('profile',{state:{props2:user.user_id}})}} >profile</h3></Nav.Link>
    
-    <Card.Title >
-    {profile.username}
-  </Card.Title>
+         </Nav>
+        <Navbar.Toggle />
+        <Navbar.Collapse className="justify-content-end" >
+       
+       <Navbar.Text >
+           
+          </Navbar.Text>
+          <IoIosNotifications size={"33px"}  style={{position:"relative", left:50,color:"#ffff"}}/>
+          <IoChatboxOutline  size={"33px"}  style={{position:"relative", left:70,color:"#ffff"} } onClick={()=>{navigate("/rooms")}}/>
+          <Navbar.Text style={{position:"relative", left:90,color:"#ffff"}}>
+          <a onClick={logout} style={{color:"#ffff"}}><h3>logout</h3></a> 
+          </Navbar.Text>
+      
 
- {/** fetch to another social accounts */}
+      </Navbar.Collapse>
+      </Container>
+    </Navbar>
+{/* ////////////////////////////////////////////////////////////////////////////////////////// */}
 
-  <div style={{display:"flex",flexDirection:"row",position:"relative"}}>
-  <Card.Text style={{marginRight:"10px"}}
 
-> Followers {profile.get_followers_count}</Card.Text>
+<section>
+<MDBContainer className="py-5">
+<MDBRow >
+          <MDBCol lg="4" >
+          {/** profile information */}
+            <MDBCard  className="mb-4" >
+              <MDBCardBody  className="text-center"  >
 
-  <Card.Text style={{marginRight:"10px"}}>  Following {profile.get_following_count}</Card.Text>
+        
+           {Profile && Profile.map(profile=>(
+            <div style={{position:"relative",right:"190px"}} >
+          
+            <MDBCardImage
+                  src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+                  alt="avatar"
+                  className="rounded-circle"
+                  style={{ width: '150px' }}
+                  fluid />
+                <p className="text-muted mb-1 ">{profile.username}</p>
+                <p className="text-muted mb-4" >{profile.bio}</p>
+                <div style={{display:"flex",flexDirection:"row",position:"relative",left:80}}>
+  <p style={{marginRight:"10px"}}
 
-  <Card.Text style={{marginRight:"10px"}}> Post {profile.get_post_count}</Card.Text>
+> Followers {profile.get_followers_count} </p>
+  <p style={{marginRight:"10px"}}> Following {profile.get_following_count}</p>
+
+
+  <p style={{marginRight:"10px"}}> Post {profile.get_post_count} </p>
   </div>
+  <div  >
+  {profile.user ===user.user_id? <MDBBtn onClick={EditProfile}  style={{width:"100px",height:"40px"}}><p>Edit</p> </MDBBtn>
+     :  <MDBBtn onClick={SendFriendRequest}  style={{width:"100px",height:"40px"}}>{button} </MDBBtn>
+ }
 
 
-  <Card.Text >{profile.bio}</Card.Text>
-  <Button variant="outline-dark" style={{width:"300px",padding:"2px",alignItems:"center",justifyContent:"center"}}> {profile.user ===user.user_id?<p> Edit profile </p>: <p>Follow</p>}</Button>{' '}
-  </div>
-  </>
-  ))}
+                </div>
 
+        </div>
+           ))
+           
+           
+           
+           }
 
-  {/* <h1 style={{position:"relative",top:"90px", margin:"5px"}}> Recent Posts</h1> */}
-  <div  className="social-card" >
-<h5 style={{paddingBottom:"10px"}}> Contect information </h5>
-<div style={{display:"flex",flexDirection:"row"}}>
+                
+              </MDBCardBody>
+            </MDBCard>
+            {/**social network accounts */}
+            <MDBCard className="mb-4 mb-lg-0">
+              <MDBCardBody className="p-0">
+              <div style={{position:"relative",right:"205px"}}>
 
-<h5>
-    field name
-</h5>
-<br/>
-<div style={{paddingLeft:"70px"}}>
-<h5 >field Value</h5>
-</div>
-
-</div>
-</div>
-
-
-<div style={{width:"600px",height:"900px",position:"relative",left:400,bottom:400}}>
-<h1 style={{position:"relative",left:150,top:50}}>REACENT POST</h1>
-{Post && Post.map(post=>(
-    <PostCard
+                <MDBListGroup flush className="rounded-3">
+                  <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                  <FaGithub size={"30px"}  />
+                    <MDBCardText>{social.github}</MDBCardText>
+                  </MDBListGroupItem>
+                  <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                  <FaTwitter size={"30px"}  />
+                    <MDBCardText>{social.twitter}</MDBCardText>
+                  </MDBListGroupItem>
+                  <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                  <FaLinkedin size={"30px"}  />
+                    <MDBCardText>{social.linkedin}</MDBCardText>
+                  </MDBListGroupItem>
+                  <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                  <FaFacebook size={"30px"} />
+                    <MDBCardText>{social.facebook}</MDBCardText>
+                  </MDBListGroupItem>
+                  <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                  <FaInstagram  size={"30px"} />
+                    <MDBCardText>{social.instgram
+}</MDBCardText>
+                  </MDBListGroupItem>
+                  
+                </MDBListGroup>
+                </div>
+              </MDBCardBody>
+            </MDBCard>
+           
+            </MDBCol>
+            {/********************* Recent Post Card **************/}
+            <MDBCol>
+            <MDBCard>
+            <MDBCol>
+         
+            {Post && Post.map(post=>(
+              <PostCard
         
         author_username={post.author_username}
        content={post.content}
@@ -170,12 +300,29 @@ useEffect(()=>{
      
        
     />
-))}
-</div>
+            ))}
+              
+            </MDBCol>
+           </MDBCard>
+            </MDBCol>
+           
+            </MDBRow>
+           
+</MDBContainer>
 
 
-  </Card>
 
+
+
+
+
+
+
+
+
+
+
+</section>
   </div>
         )};
 

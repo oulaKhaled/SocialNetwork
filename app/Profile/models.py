@@ -142,7 +142,7 @@ class Social(models.Model):
     facebook = models.URLField(max_length=283, null=True, blank=True)
 
     def __str__(self):
-        return self.profile.user.name
+        return self.profile.username
 
 
 STATUS_CHOICES = (("send", "send"), ("accepted", "accepted"))

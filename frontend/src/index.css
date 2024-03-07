@@ -4,7 +4,7 @@ body {
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
  
-   background-color: blue;
+  
 }
 
 code {
@@ -12,6 +12,6 @@ code {
     monospace;
 }
 .body-style{
-  background-color:#CDF5FD
+  background-color:#ffff
 }
 

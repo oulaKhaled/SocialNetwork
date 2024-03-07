@@ -190,9 +190,7 @@ const newPost= async ()=>{
   
    
       
-  const AddLike=async()=>{
-  
-  }
+ 
   
 
   
@@ -204,36 +202,27 @@ const newPost= async ()=>{
    <div style={{width :"100%"}}>
   
     
-<Navbar className="bg-body-tertiary" style={{
-    width:"100%"}}>
-    <Container>
-        <Navbar.Brand href="#home">
-        <div style={{flexDirection:"row",display:"flex"}}>
-          <button className="btn-23" >
-            <span className="text">BLOGZ</span>
-  <span  className="marquee">BLOGZ</span>
-</button>
-<div className="input-container">
-  <input type="text" id="input" required=""/>
-  <label className="label">Search</label>
-  <div className="underline"></div>
-</div>
-
-
-</div>
-
-
-</Navbar.Brand>
+<Navbar className="bg-body-tertiary"  bg="dark" data-bs-theme="dark" style={{
+    width:"100%",
+    backgroundColor:"red"
+  }}>
+    <Container style={{}}>
+       
+        <Navbar.Brand href=""><h1 style={{color:"#ffff"}}>BLOGZ</h1></Navbar.Brand>
+        <Nav className="">
+        <Nav.Link href="">  <h3 style={{color:"#ffff"}} onClick={()=>{navigate('profile',{state:{props2:user.user_id}})}} >profile</h3></Nav.Link>
+   
+         </Nav>
         <Navbar.Toggle />
-        <Navbar.Collapse className="justify-content-end">
+        <Navbar.Collapse className="justify-content-end" >
        
        <Navbar.Text >
-           <a onClick={()=>{navigate("/profile",{state:{props2:user.user_id}})}}><h1>{user.username}</h1></a>
+           
           </Navbar.Text>
-          <IoIosNotifications size={"33px"}  style={{position:"relative", left:50}}/>
-          <IoChatboxOutline  size={"33px"}  style={{position:"relative", left:70} } onClick={()=>{navigate("/rooms")}}/>
-          <Navbar.Text style={{position:"relative", left:90}}>
-          <a onClick={logout}><h3>logout</h3></a> 
+          <IoIosNotifications size={"33px"}  style={{position:"relative", left:50,color:"#ffff"}}/>
+          <IoChatboxOutline  size={"33px"}  style={{position:"relative", left:70,color:"#ffff"} } onClick={()=>{navigate("/rooms")}}/>
+          <Navbar.Text style={{position:"relative", left:90,color:"#ffff"}}>
+          <a onClick={logout} style={{color:"#ffff"}}><h3>logout</h3></a> 
           </Navbar.Text>
       
 
@@ -241,24 +230,33 @@ const newPost= async ()=>{
       </Container>
     </Navbar>
 {/* *****************************Post Form ******************************/}
-<div className="card2">
+<div className='card2'>
       <h3 style={{fontWeight:"bold"}}> what is in your mind ?</h3>
         <Form.Control as="textarea" rows={10}  style={{ width:"490px",height:"60px"}} name='content' onChange={handelNewPost} />
         <Form.Control type='file'  style={{width:"490px",height:"40px"}} name='image' onChange={handelNewPost}/>
         <br/>
 
-        <Button onClick={HandelClick} style={{width:"50px",height:"auto",position:"flex",left:0,bottom:0,margin:"5px"}}><IoIosSend />
+        <Button onClick={HandelClick} style={{width:"50px",height:"auto",position:"flex",left:0,bottom:0,margin:"5px"}}>post
  </Button>
    </div>
    
 
-{/***************************************** **********************************/}
+{/***************************************** ******<IoIosSend />****************************/}
 
 
 {/* ***************************** Following Posts Form ******************************/}
+
 <div style={{position:"absolute",top:"50%",left:"30%"}} >
       {posts && posts.map((post,key)=>(
-    
+        <div>
+        <hr  style={{
+    color: '#000000',
+    backgroundColor: '#000000',
+    height: 1,
+    borderColor : '#000000',
+  
+}}/>
+
         <PostCard 
         key={key}
         author_username={post.author_username}
@@ -266,21 +264,22 @@ const newPost= async ()=>{
        comments_count={post.comments_count}
        likes_count={post.likes_count}
        date={post.date}
-       add_like={AddLike}
-      
+   
+  
        author={post.author}
        posts={posts}
        id={post.id}
        
        
        />
-     
+     </div>
 
      
       
     
       ))}
       </div>
+      
       {/* <button onClick={()=>{ console.log("comments :",comments)}}> Click </button>
       <button onClick={()=>{ console.log("posts :",posts)}}> post </button> */}
      
@@ -313,3 +312,18 @@ image={require("../images/picture.jpg")}
       /> */}
        {/***************************************** **********************************/}
 
+     {/* <div style={{flexDirection:"row",display:"flex"}}>
+          <button className="btn-23" >
+            <span className="text">BLOGZ</span>
+  <span  className="marquee">BLOGZ</span>
+</button>*/}
+{/* <div style={{flexDirection:"row",display:"flex"}}>
+   <h1 >BLOGZ</h1>
+  <div className="input-container">
+  <input type="text" id="input" required=""/>
+  <label className="label">Search</label>
+  <div className="underline"></div>
+</div>    
+            <Nav.Link href="#pricing">Pricing</Nav.Link>
+        
+</div> */}
