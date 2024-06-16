@@ -15,10 +15,16 @@ import os
 from datetime import timedelta
 import environ
 import dj_database_url
-from dotenv import load_dotenv
+from decouple import config
 
 env = environ.Env()
 environ.Env.read_env()
+
+
+def str_to_list(value):
+    return [item.strip() for item in value.split(",")]
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,10 +33,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = config("SECRET_KEY")
+# os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG")
+DEBUG = config("DEBUG")
 
 
 # Application definition
@@ -93,10 +100,6 @@ CHANNEL_LAYERS = {
 }
 
 
-CORS_ALLOWED_ORIGINS = os.environ.get("CORS_ALLOWED_ORIGINS_DEPLOY")
-ALLOWED_HOSTS = os.environ.get("ALOWED_HOSTS_DEPLOY")
-CORS_ALLOWED_WHITLEST = os.environ.get("CORS_ALLOWED_WHITLEST_DEPLOY")
-CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS_DEPLOY")
 # CORS_ORIGIN_WHITELIST = [
 #     "http://localhost:3000",  # Add the origin of your React app
 # ]
@@ -115,8 +118,10 @@ CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS_DEPLOY")
 #     }
 # }
 
-
-DATABASES = {"default": dj_database_url.parse(os.environ.get("DATABASE_URL"))}
+# DATABASE_URL = os.environ.get("DATABASE_URL")
+DATABASES = {
+    "default": dj_database_url.parse(config("DATABASE_URL")),
+}
 
 
 REST_FRAMEWORK = {
@@ -207,7 +212,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 AUTH_USER_MODEL = "Profile.User"
 
-
+CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS_DEPLOY", cast=str_to_list)
+ALLOWED_HOSTS = config("ALLOWED_HOSTS_DEPLOY", cast=str_to_list)
+CORS_ALLOWED_WHITLEST = config("CORS_ALLOWED_WHITLEST_DEPLOY", cast=str_to_list)
+CSRF_TRUSTED_ORIGINS = [config("CSRF_TRUSTED_ORIGINS_DEPLOY")]
 #  "DEFAULT_PERMISSIONS_CLASSES": {
 
 #         "rest_framework_simplejwt.authentication.JWTAuthentication"
