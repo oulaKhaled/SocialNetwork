@@ -28,6 +28,7 @@ distlib==0.3.7
 dj-database-url==2.2.0
 Django==4.2.4
 django-cors-headers==4.3.1
+django-environ==0.11.2
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.3.1
 docutils==0.20.1
@@ -122,6 +123,7 @@ pyparsing==3.1.1
 Pyrebase==3.0.27
 Pyrebase4==4.7.1
 python-dateutil==2.8.2
+python-decouple==3.8
 python-jwt==2.0.1
 pytz==2023.3.post1
 pywin32==306
