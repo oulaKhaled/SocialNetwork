@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from datetime import timedelta
+import environ
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,12 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-u$p35=fpoqiy+wpan6e9@6%23&86(cplk@z+_$%9at3plzz@c%"
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+DEBUG = os.environ.get("DEBUG")
 
 
 # Application definition
@@ -90,27 +90,32 @@ CHANNEL_LAYERS = {
 }
 
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-]
-
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000",  # Add the origin of your React app
-]
+CORS_ALLOWED_ORIGINS = os.environ.get("CORS_ALLOWED_ORIGINS_DEPLOY")
+ALLOWED_HOSTS = os.environ.get("ALOWED_HOSTS_DEPLOY")
+CORS_ALLOWED_WHITLEST = os.environ.get("CORS_ALLOWED_WHITLEST_DEPLOY")
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS_DEPLOY")
+# CORS_ORIGIN_WHITELIST = [
+#     "http://localhost:3000",  # Add the origin of your React app
+# ]
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "appdb",
-        "USER": "postgres",
-        "PASSWORD": "root",
-        "HOST": "localhost",
-        "PORT": "5432",
-    }
-}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql_psycopg2",
+#         "NAME": "appdb",
+#         "USER": "postgres",
+#         "PASSWORD": "root",
+#         "HOST": "localhost",
+#         "PORT": "5432",
+#     }
+# }
+
+
+DATABASES = {"default": dj_database_url.parse(os.environ.get("DATABASE_URL"))}
+
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -193,6 +198,7 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_ROOT = "/media/"
+MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 

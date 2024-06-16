@@ -1,8 +1,28 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  scroll-behavior: smooth;
+ 
+}
+
+body {
+  background-color: antiquewhite;
+}
+.test{
+  align-items:center;
+  
+}
+a {
+  color: unset;
+  text-decoration: none;
+ 
+
+}
+
 .App {
   text-align: center;
 
-
- 
 }
 
 .App-logo {
@@ -118,7 +138,7 @@ margin: 90px;
   border: 0 solid;
   box-sizing: border-box;
 }
-
+/* 
 .btn-23 {
   -webkit-tap-highlight-color: transparent;
   -webkit-appearance: button;
@@ -137,7 +157,7 @@ margin: 90px;
   padding: 0;
   text-transform: uppercase;
   height: 50px;
-}
+} */
 
 .btn-23:disabled {
   cursor: default;

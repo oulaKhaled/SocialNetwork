@@ -26,9 +26,9 @@ import { IoIosNotifications } from "react-icons/io";
 import { IoChatboxOutline } from "react-icons/io5";
 import { IoIosSend } from "react-icons/io";
 import { useRef } from 'react';
+import { FaUserFriends } from "react-icons/fa";
 
-
-
+import Header from './header';
 
 
 
@@ -40,10 +40,11 @@ function Home({ children }) {
     "content":"",
     "image":""
   })
-
+  let dateToday=  new Date();
+    
   let  firstRender=useRef(true);
 
-  
+  const sortedposts=[];
 const postIds=[];
 
   const { user, logout, authToken } = useContext(AuthContext);
@@ -105,6 +106,11 @@ const postIds=[];
     })
     let data = await response.json()
     console.log("Fetched Posts for user : ", id, " Data : ", data);
+
+   data.sort((a, b) => new Date(b.date) - new Date(a.date));
+   
+    console.log("Sorted Array", data);
+
     if (Array.isArray(data)){
     SetPosts(prev => [...prev, ...data])
     }
@@ -114,7 +120,10 @@ const postIds=[];
   const getAllPosts = async () => {
     following.map(item => (
       followingIds.push(item.following)
+      
     ))
+    followingIds.push(user.user_id);
+      
     // followingIds.push(user.user_id)
     // console.log("following",following);
     for (let i = 0; i<followingIds.length;i++) {
@@ -164,6 +173,9 @@ const newPost= async ()=>{
     body:JSON.stringify({"content":newpost.content,"image":newPost.image,"author":user.user_id})
   })
   let data = await response.json()
+  if(response.ok){
+    window.location.reload();
+  }
   console.log("new Post response ",data);
   
   }
@@ -196,39 +208,12 @@ const newPost= async ()=>{
   
 
   return (
-    <div style={{alignItems:"center"}}>
+    <div className='test' >
       {user &&
       
    <div style={{width :"100%"}}>
   
-    
-<Navbar className="bg-body-tertiary"  bg="dark" data-bs-theme="dark" style={{
-    width:"100%",
-    backgroundColor:"red"
-  }}>
-    <Container style={{}}>
-       
-        <Navbar.Brand href=""><h1 style={{color:"#ffff"}}>BLOGZ</h1></Navbar.Brand>
-        <Nav className="">
-        <Nav.Link href="">  <h3 style={{color:"#ffff"}} onClick={()=>{navigate('profile',{state:{props2:user.user_id}})}} >profile</h3></Nav.Link>
-   
-         </Nav>
-        <Navbar.Toggle />
-        <Navbar.Collapse className="justify-content-end" >
-       
-       <Navbar.Text >
-           
-          </Navbar.Text>
-          <IoIosNotifications size={"33px"}  style={{position:"relative", left:50,color:"#ffff"}}/>
-          <IoChatboxOutline  size={"33px"}  style={{position:"relative", left:70,color:"#ffff"} } onClick={()=>{navigate("/rooms")}}/>
-          <Navbar.Text style={{position:"relative", left:90,color:"#ffff"}}>
-          <a onClick={logout} style={{color:"#ffff"}}><h3>logout</h3></a> 
-          </Navbar.Text>
-      
-
-      </Navbar.Collapse>
-      </Container>
-    </Navbar>
+  <Header/>
 {/* *****************************Post Form ******************************/}
 <div className='card2'>
       <h3 style={{fontWeight:"bold"}}> what is in your mind ?</h3>
@@ -264,7 +249,7 @@ const newPost= async ()=>{
        comments_count={post.comments_count}
        likes_count={post.likes_count}
        date={post.date}
-   
+       image={post.image}
   
        author={post.author}
        posts={posts}
@@ -326,4 +311,17 @@ image={require("../images/picture.jpg")}
 </div>    
             <Nav.Link href="#pricing">Pricing</Nav.Link>
         
-</div> */}
+</div> */
+
+
+
+
+  // console.log("post based on thier Dates : ", data[i].date);
+    
+  //  console.log(`Today's Date : ${dateToday} ${new Date(data[i].date)} RESULT ${dateToday - new Date(data[i].date)}`);
+    
+  
+
+
+
+}

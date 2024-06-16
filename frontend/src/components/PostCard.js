@@ -69,20 +69,20 @@ const get_post_id= async()=>{
 // postIds.push(post.id)
 // ))
 
-postIds.push(props.id)
+    postIds.push(props.id)
 
-for (let i=0;i<postIds.length;i++){
+    for (let i=0;i<postIds.length;i++){
 
-try{
+    try{
 
-await get_related_commnts(postIds[i])
+    await get_related_commnts(postIds[i])
 
-}
-catch{
-console.log("there is no comment");
-}
+    }
+    catch{
+    console.log("there is no comment");
+    }
 
-}
+    }
 
 }
 
@@ -148,7 +148,23 @@ e.preventDefault()
 
   }
  
+  const deletePost= async()=>{
+  
 
+    let response =await fetch(`${BASE_URL}post/${props.id}/`,{
+        method:"DELETE",
+        headers:{
+           
+            "Authorization":`Bearer ${authToken.access}`,
+       
+          }
+    })
+   
+    if(response.ok){
+    window.location.reload();
+    }
+  
+}
 
 return(
       <div className="con">
@@ -156,7 +172,10 @@ return(
 {/*  `..`+props.image        //  image={require(post.image!==null ? `..`+post.image:"../images/picture.jpg" )}
   <img src={props.image} alt="image"/>    src={require('../images/picture.jpg')}}*/ }
         <div className="card-container">
-        <img  alt="image"   />
+        { props.image?<img   src={`http://localhost:8000${props.image}`}  />:null
+        }
+        
+       
         <p className="card-description">{props.date}</p>
         <h3 className="card-title" onClick={HandelClick}> {props.author_username}</h3>
         <p className="card-description">{props.content}</p>
@@ -176,6 +195,7 @@ return(
 
  </Button>
         <input placeholder="add comment" class="input-comment" name="text" onChange={handelForm}  /> 
+       <Button onClick={deletePost}>Delete my post</Button>
 </form>
        </div>
       {/**all comments must be displayed here */}
@@ -188,7 +208,7 @@ return(
         </div>
           <Card.Text style={{position:"relative",bottom:15,left:10}}>{comment.content}</Card.Text>
 
-          
+       
          
         </Card> : null
       ))

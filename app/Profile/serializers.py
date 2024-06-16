@@ -66,6 +66,9 @@ class SocialSerializers(ModelSerializer):
 
 
 class FriendRequestSerializers(ModelSerializer):
+    sender = serializers.CharField()
+    reciver = serializers.CharField()
+
     class Meta:
         model = FriendRequest
-        fields = "__all__"
+        fields = ["id", "sender", "reciver", "status", "created_at"]

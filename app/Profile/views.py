@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from rest_framework_simplejwt.tokens import Token
@@ -232,6 +232,23 @@ class FriendRequestView(viewsets.ModelViewSet):
             }
             return Response(Response, status=status.HTTP_400_BAD_REQUEST)
 
+    def list(self, request, *args, **kwargs):
+        reciver_id = request.GET.get("reciver_id")
+        reciver = User.objects.get(id=reciver_id)
+        friendRequest = FriendRequest.objects.filter(reciver=reciver)
+        # sender = User.objects.filter(email=friendRequest.sender)
+        print("RECİVER : ", reciver)
+        print("FRIEND REQUEST : ", friendRequest)
+        # print("SENDER : ", sender.username)
+        if friendRequest:
+            serializer = FriendRequestSerializers(friendRequest, many=True)
+            print("SERİALİZER : ", serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        else:
+            response = {"massege": "there is no requests yet ..."}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -264,3 +281,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 #     user = User.objects.get(id=pk)
 #     token = Token.objects.get(user=user)
 #     print(token)
+#   print("RECİVER : ", reciver)
+#         print("FRIEND REQUEST : ", friendRequest)
+#         serilizer = FriendRequestSerializers(friendRequest)
+#         print("SERİLİZER : ", serilizer.data)

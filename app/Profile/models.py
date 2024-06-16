@@ -169,7 +169,7 @@ class FriendRequest(models.Model):
     created_at = models.DateField(null=False, blank=False, default=date.today)
 
     def __str__(self):
-        return f"{self.sender.id} send request to {self.reciver.id}"
+        return f"{self.sender.username} send request to {self.reciver.username}"
 
     class Meta:
         unique_together = ["reciver", "sender"]
