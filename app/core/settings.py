@@ -13,16 +13,14 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from datetime import timedelta
-import environ
-import dj_database_url
-from decouple import config
-
-env = environ.Env()
-environ.Env.read_env()
 
 
-def str_to_list(value):
-    return [item.strip() for item in value.split(",")]
+# env = environ.Env()
+# environ.Env.read_env()
+
+
+# def str_to_list(value):
+#     return [item.strip() for item in value.split(",")]
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -33,11 +31,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY = "33b536c73c9603a5fe86e1bf0b07acac16bdc3d44e8f0f62758627c42c3c6032"
 # os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG")
+DEBUG = False
 
 
 # Application definition
@@ -98,8 +96,7 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer",
     },
 }
-
-
+ALLOWED_HOSTS = ["*"]
 # CORS_ORIGIN_WHITELIST = [
 #     "http://localhost:3000",  # Add the origin of your React app
 # ]
@@ -107,21 +104,21 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql_psycopg2",
-#         "NAME": "appdb",
-#         "USER": "postgres",
-#         "PASSWORD": "root",
-#         "HOST": "localhost",
-#         "PORT": "5432",
-#     }
-# }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "appdb",
+        "USER": "postgres",
+        "PASSWORD": "root",
+        "HOST": "localhost",
+        "PORT": "5432",
+    }
+}
 
 # DATABASE_URL = os.environ.get("DATABASE_URL")
-DATABASES = {
-    "default": dj_database_url.parse(config("DATABASE_URL")),
-}
+# DATABASES = {
+#     "default": dj_database_url.parse(config("DATABASE_URL")),
+# }
 
 
 REST_FRAMEWORK = {
@@ -211,11 +208,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
 AUTH_USER_MODEL = "Profile.User"
-
-CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS_DEPLOY", cast=str_to_list)
-ALLOWED_HOSTS = config("ALLOWED_HOSTS_DEPLOY", cast=str_to_list)
-CORS_ALLOWED_WHITLEST = config("CORS_ALLOWED_WHITLEST_DEPLOY", cast=str_to_list)
-CSRF_TRUSTED_ORIGINS = [config("CSRF_TRUSTED_ORIGINS_DEPLOY")]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:19006",
+]
+# CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS_DEPLOY", cast=str_to_list)
+# ALLOWED_HOSTS = config("ALLOWED_HOSTS_DEPLOY", cast=str_to_list)
+# CORS_ALLOWED_WHITLEST = config("CORS_ALLOWED_WHITLEST_DEPLOY", cast=str_to_list)
+# CSRF_TRUSTED_ORIGINS = [config("CSRF_TRUSTED_ORIGINS_DEPLOY")]
 #  "DEFAULT_PERMISSIONS_CLASSES": {
 
 #         "rest_framework_simplejwt.authentication.JWTAuthentication"
