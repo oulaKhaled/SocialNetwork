@@ -1,1 +1,1 @@
-
+Blog app, It has real-time Chat, user authentication, profiles, comments, and a friends system. The backend uses Django Rest Framework for APIs,React frontend is designed for a smooth modern user experience. 
